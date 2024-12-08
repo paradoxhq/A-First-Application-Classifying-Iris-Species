@@ -1,0 +1,56 @@
+# Імпортуємо необхідні бібліотеки
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.neighbors import KNeighborsClassifier
+import numpy as np
+
+# Завантажуємо датасет Iris
+iris_dataset = load_iris()
+
+# Відображаємо ключі датасету
+print("Keys of iris_dataset:\n", iris_dataset.keys())
+
+# Відображаємо опис датасету
+print("\nDataset description (first 193 characters):\n", iris_dataset['DESCR'][:193], "...")
+
+# Відображаємо назви цільових класів і ознак
+print("\nTarget names:", iris_dataset['target_names'])
+print("\nFeature names:", iris_dataset['feature_names'])
+
+# Переглядаємо тип даних і масиви даних та міток
+print("\nType of data:", type(iris_dataset['data']))
+print("Shape of data:", iris_dataset['data'].shape)
+print("First five rows of data:\n", iris_dataset['data'][:5])
+
+print("\nType of target:", type(iris_dataset['target']))
+print("Shape of target:", iris_dataset['target'].shape)
+print("Target values:\n", iris_dataset['target'])
+
+# Розділяємо датасет на тренувальну та тестову вибірки
+X_train, X_test, y_train, y_test = train_test_split(
+    iris_dataset['data'], iris_dataset['target'], random_state=0
+)
+
+# Відображаємо розміри тренувальної та тестової вибірок
+print("\nShape of X_train:", X_train.shape)
+print("Shape of X_test:", X_test.shape)
+print("Shape of y_train:", y_train.shape)
+print("Shape of y_test:", y_test.shape)
+
+# Навчаємо класифікатор k-ближчих сусідів
+knn = KNeighborsClassifier(n_neighbors=1)
+knn.fit(X_train, y_train)
+
+# Тестуємо модель на новому зразку
+data_sample = np.array([[5.0, 2.9, 1.0, 0.2]])
+predicted_class = knn.predict(data_sample)
+print("\nPredicted class for sample {}: {} ({})".format(
+    data_sample,
+    predicted_class[0],
+    iris_dataset['target_names'][predicted_class[0]]
+))
+
+# Оцінюємо точність моделі на тестовій вибірці
+y_pred = knn.predict(X_test)
+accuracy = np.mean(y_pred == y_test)
+print("\nModel accuracy on test set: {:.2f}".format(accuracy))
